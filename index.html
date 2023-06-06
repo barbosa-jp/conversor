@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500&display=swap" rel="stylesheet">
+    <title>Conversor</title>
+</head>
+<body>
+    <main>
+        <div id="opcoes">
+            <span class="span-opcoes" id="opcao-ativada" onclick="mudarOpcao(this)">BIN</span><span class="span-opcoes" onclick="mudarOpcao(this)">OCT</span><span class="span-opcoes" onclick="mudarOpcao(this)">HEX</span>
+        </div>
+        <form>
+            <label id="label-decimal">
+                <textarea name="resultado-decimal" id="textarea-decimal" placeholder="Digite o Decimal Aqui!" onkeyup="decimalParaBinario()"></textarea>
+            </label>
+            <label id="label-binario">
+                <textarea name="resultado-conversao" id="textarea-conversao" placeholder="Digite o Binário Aqui!" onkeyup="binarioParaDecimal()"></textarea>
+            </label>
+        </form>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
