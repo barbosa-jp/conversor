@@ -123,6 +123,81 @@ function decimalParaOctal() {
     const output = document.querySelector("#textarea-conversao")
     output.value = resultado
 }
+//Decimal para hex
+function decimalParaHex() {
+    //Variáveis 
+    let resultado = "" 
+    let parteInteira = 0
+    let parteFracionada = 0
+    let posicao = 0
+    let vetorInteiro = []
+    //Ler valor
+    let valor = document.querySelector("#textarea-decimal").value
+    //Separar parte inteira
+    parteInteira = parseInt(valor)
+    //Separar parte fracionada
+    let aux = parteInteira
+    for (var i = 1; valor > aux; i++){
+        for (var j = 0; j <= 9; j++){
+            if ((aux + 0.1**i * j <= valor)){
+                parteFracionada += 0.1**i * (j - 1)
+                aux += 0.1**i * (j - 1)
+                j = 10
+            }
+        }
+        posicao++
+    }
+    //Transfomar parte inteira para binário
+    aux = parteInteira
+    posicao = 0
+    while (aux != 0 && valor != ""){
+        vetorInteiro[posicao] = aux%16
+        switch (vetorInteiro[posicao]) {
+            case 10:
+                vetorInteiro[posicao] = "A"
+                break
+            case 11:
+                vetorInteiro[posicao] = "B"
+                break
+            case 12:
+                vetorInteiro[posicao] = "C"
+                break
+            case 13:
+                vetorInteiro[posicao] = "D"
+                break
+            case 14:
+                vetorInteiro[posicao] = "E"
+                break
+            case 15:
+                vetorInteiro[posicao] = "F"
+                break
+            default:
+                vetorInteiro[posicao] = vetorInteiro[posicao].toString()
+                break
+        }
+        if (aux%16 != 0){
+            aux = parseInt(aux/16) 
+        } else { 
+            aux = aux/16
+        }
+        posicao++
+    }   
+    for(var i = 0; i < vetorInteiro.length; i++){
+        resultado += vetorInteiro[vetorInteiro.length - (i+1)]
+    }
+    //Transformar parte fracionada para binário
+    aux = parteFracionada
+    for(var i = 0; aux != 0; i++){
+        aux *= 8
+        if (aux >= 7){
+            resultado += 0.1**(i+1)
+            aux -= 7
+        }
+    }
+    //Mostrar resultado
+    const output = document.querySelector("#textarea-conversao")
+    output.value = resultado
+}
 //Binario para decimal
 function binarioParaDecimal() {
     //Variáveis 
@@ -199,7 +274,7 @@ function octalParaDecimal() {
     for(var i = 1; i <= vetorInteiro.length; i++){
         for(var j = 0; j < 8; j++){
             if (vetorInteiro[vetorInteiro.length - i] == j){
-                resultado += 8**(i-1)
+                resultado += (8**(i-1)) * j
             }
         }
     }
@@ -209,6 +284,53 @@ function octalParaDecimal() {
             resultado += 0.125**(i+1)
         }
     }
+    //Mostrar resultado
+    const output = document.querySelector("#textarea-decimal")
+    output.value = resultado
+}
+
+//Binario para decimal
+function hexParaDecimal() {
+    //Variáveis 
+    let parteInteira = 0
+    let posicao = 0
+    let vetorInteiro = []
+    let vetorFracionado = []
+    let resultado = 0
+    //Ler valor
+    let valor = document.querySelector("#textarea-conversao").value
+    //Separar parte inteira
+    parteInteira = valor.toUpperCase()
+    vetorInteiro = parteInteira.split("")
+
+    for(var i = 0; i < vetorInteiro.length; i++){
+        switch(vetorInteiro[vetorInteiro.length - (1+i)]){
+            case "A":
+                resultado += (16**i) * 10
+                window.alert(resultado)
+            break
+            case "B":
+                resultado += (16**i) * 11
+            break
+            case "C":
+                resultado += (16**i) * 12
+            break
+            case "D":
+                resultado += (16**i) * 13
+            break
+            case "E":
+                resultado += (16**i) * 14
+            break
+            case "F":
+                resultado += (16**i) * 15
+            break
+            default:
+                resultado += (16**i) * (parseInt(vetorInteiro[vetorInteiro.length - (1+i)]))
+            break
+        }
+    }
+    
+
     //Mostrar resultado
     const output = document.querySelector("#textarea-decimal")
     output.value = resultado
