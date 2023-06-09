@@ -1,3 +1,4 @@
+//Mudar de conversao
 function mudarOpcao(opcao) {
     const opcaoAnterior = document.querySelector("#opcao-ativada")
     opcaoAnterior.setAttribute("id", " ")
@@ -5,8 +6,8 @@ function mudarOpcao(opcao) {
     const textareaConversao = document.querySelector("#textarea-conversao")
     const textareaDecimal = document.querySelector("#textarea-decimal")
     if (opcao.textContent == "BIN"){
-        textareaConversao.setAttribute("placeholder", "Digite o Binario Aqui!")
-        textareaConversao.setAttribute("onkeyup", "binaroParaDecimal()")
+        textareaConversao.setAttribute("placeholder", "Digite o Binário Aqui!")
+        textareaConversao.setAttribute("onkeyup", "binarioParaDecimal()")
         textareaDecimal.setAttribute("onkeyup", "decimalParaBinario()")
     } else if (opcao.textContent == "OCT"){
         textareaConversao.setAttribute("placeholder", "Digite o Octal Aqui!")
@@ -17,62 +18,56 @@ function mudarOpcao(opcao) {
         textareaConversao.setAttribute("onkeyup", "hexParaDecimal()")
         textareaDecimal.setAttribute("onkeyup", "decimalParaHex()")
     }
-}
-    
+}  
 //Decimal para binário
 function decimalParaBinario() {
     //Ler valor
     let valor = document.querySelector("#textarea-decimal").value
     if (valor != ""){
         //Separar parte inteira
-        let parteInteira = parseInt(valor)
+        let aux = parseInt(valor)
         //Transfomar parte inteira para binário
-        let aux = parteInteira
         let vetorInteiro = []
-        if (aux != 0 && aux != 1){
+        let resultado = ""
+        if (aux != 0){
             for(var i = 0; aux != 0; i++){
-                vetorInteiro[i] = aux%2
-                vetorInteiro[i] = vetorInteiro[i].toString()
-                aux/=2
+                vetorInteiro[i] = (aux%2).toString()
+                aux /= 2
                 if(aux%2 != 0){
                     aux = parseInt(aux)
                 }
+            }    
+            for(var i = 1; i <= vetorInteiro.length; i++){
+                resultado += vetorInteiro[vetorInteiro.length - i]
             }
         } else {
-            vetorInteiro[0] = aux
+            resultado += "0"
         }
-        let resultado = []
-        for(var i = 1; i <=  vetorInteiro.length; i++){
-            resultado[resultado.length] = vetorInteiro[vetorInteiro.length - i]
-        }
-         //Separa parte decimal
+        //Separar parte decimal
         let vetorDecimal = []
         aux = parseFloat(valor)%1
         vetorDecimal = valor.split("")
-        let posicao = 0
-        let valorPosicao = ""
-        let parteDecimal = ""
         if (aux != 0){
-            resultado[resultado.length] = "."
+            let valorPosicao = ""
+            resultado += "."
             do{
-                valorPosicao = vetorDecimal.splice(posicao, 1)
+                valorPosicao = vetorDecimal.splice(0, 1)
             } while(valorPosicao != ".")
-            parteDecimal = "0."
+            let parteDecimal = "0."
             for(var i = 0; i < vetorDecimal.length; i++){
                 parteDecimal += vetorDecimal[i]
             }
-            parteDecimal = parseFloat(parteDecimal)
             //Transformar parte fracionada para binário
-            aux = parteDecimal
+            aux = parseFloat(parteDecimal)
             for(var i = 0; aux != 1; i++){
                 aux *= 2
                 if (aux >= 1){
-                    resultado[resultado.length] = 1
+                    resultado += "1"
                     if (aux != 1){
                         let vetorAux = []
                         vetorAux = aux.toString().split("")
                         do{
-                            valorPosicao = vetorAux.splice(posicao, 1)
+                            valorPosicao = vetorAux.splice(0, 1)
                         } while(valorPosicao != ".")
                         aux = "0."
                         for(var i = 0; i < vetorAux.length; i++){
@@ -81,9 +76,9 @@ function decimalParaBinario() {
                         aux = parseFloat(aux)
                     }
                 } else {
-                    resultado[resultado.length] = 0
+                    resultado += "0"
                 }
-                if (resultado.length == 9){
+                if (resultado.length == 30){
                     aux = 1
                 }
             }
@@ -94,61 +89,140 @@ function decimalParaBinario() {
         for(var i = 0; i < resultado.length; i++){
             output.value += resultado[i]
         }
-    }    
+    }else {
+        //Mostrar resultado
+        const output = document.querySelector("#textarea-conversao")
+        output.value = ""
+    } 
+}
+//Binario para Decimal
+function binarioParaDecimal() {
+    //Ler valor
+    let valor = document.querySelector("#textarea-conversao").value
+    if(valor != ""){
+        //Separar parte inteira
+        let vetorInteiro = []
+        let aux = parseInt(valor)
+        vetorInteiro = aux.toString().split("")
+        let parteInteira = 0
+        for (var i = 0; i < vetorInteiro.length; i++){
+            if (vetorInteiro[vetorInteiro.length - (i + 1)] == "1"){
+                parteInteira  += (parseInt(vetorInteiro[vetorInteiro.length - (i+1)]) * 2**i)
+            }
+        }
+        let resultado = ""
+        resultado += parteInteira.toString() 
+        //Separar parte decimal
+        let vetorDecimal = []
+        aux = parseFloat(valor)%1
+        if (aux != 0){
+            aux = aux.toString()
+            vetorDecimal = valor.split("")
+            let valorPosicao = ""
+            do{
+                valorPosicao = vetorDecimal.splice(0, 1)
+            } while(valorPosicao != ".")
+            //Transformar parte fracionada para decimal
+            let vetorAux1 = []
+            let vetorAux2 = []
+            let aux2 = 0
+            for(var i = 0; i < vetorDecimal.length; i++){
+                if(i==0){
+                    aux = parseInt(vetorDecimal[i]) * 0.5
+                    aux = aux.toString()
+                    vetorAux1 = aux.split("")
+                    valorPosicao = ""
+                    if (aux != "0"){
+                        do{
+                            valorPosicao = vetorAux1.splice(0, 1)
+                        } while(valorPosicao != ".")
+                    }
+                } else {   
+                    aux = parseInt(vetorDecimal[i]) * 0.5**(i+1)
+                    aux= aux.toString()
+                    vetorAux2 = aux.split("")
+                    valorPosicao = ""
+                    if (aux != 0){
+                        do{
+                            valorPosicao = vetorAux2.splice(0, 1)
+                        } while(valorPosicao != ".")
+                    }
+                    if (vetorAux1.length > vetorAux2.length ){
+                        for(var j = (vetorAux1.length - vetorAux2.length); j > 0; j--){
+                            vetorAux2[vetorAux1.length - j] = "0"
+                        }
+                    } else if (vetorAux1.length < vetorAux2.length){
+                        for(var j = (vetorAux2.length - vetorAux1.length); j > 0; j--){
+                            vetorAux1[vetorAux2.length - j] = "0"
+                        }
+                    } 
+                    for (var j = vetorAux1.length - 1; j >= 0; j--){
+                        aux = parseInt(vetorAux1[j]) + parseInt(vetorAux2[j]) + aux2
+                        if (aux > 9){
+                            aux -= 10
+                            aux2 = 1
+                        } else {
+                            aux2 = 0
+                        }
+                        vetorAux1[j] = aux
+                    }
+                }
+            }
+            if (aux2 == 1){
+                resultado +=".1"
+            } else {
+                resultado += "."
+            }
+            for(var i = 0; i < vetorAux1.length; i++){
+                resultado += vetorAux1[i]
+            }
+        }
+        //Mostrar resultado
+        const output = document.querySelector("#textarea-decimal")
+        output.value = ""
+        for(var i = 0; i < resultado.length; i++){
+            output.value += resultado[i]
+        }
+    } else {
+        //Mostrar resultado
+        const output = document.querySelector("#textarea-decimal")
+        output.value = ""
+    }
 }
 //Decimal para Octal
 function decimalParaOctal() {
-    //Variáveis 
-    let resultado = 0 
-    let parteInteira = 0
-    let parteFracionada = 0
-    let posicao = 0
-    let vetorInteiro = []
     //Ler valor
     let valor = document.querySelector("#textarea-decimal").value
-    //Separar parte inteira
-    parteInteira = parseInt(valor)
-    //Separar parte fracionada
-    let aux = parteInteira
-    for (var i = 1; valor > aux; i++){
-        for (var j = 0; j <= 9; j++){
-            if ((aux + 0.1**i * j <= valor)){
-                parteFracionada += 0.1**i * (j - 1)
-                aux += 0.1**i * (j - 1)
-                j = 10
+    if (valor != ""){
+        //Separar parte inteira
+        let aux = parseInt(valor)
+        //Transfomar parte inteira para binário
+        let resultado = ""
+        if (aux != 0){
+            let vetorInteiro = []
+            for (var i = 0; aux != 0; i++){
+                vetorInteiro[i] = (aux%8).toString()
+                aux /= 8
+                if (aux%8 != 0){
+                    aux = parseInt(aux) 
+                }
             }
+            for(var i = 1; i <= vetorInteiro.length; i++){
+                resultado += vetorInteiro[vetorInteiro.length - i]
+            }
+        } else {
+            resultado = "0"
         }
-        posicao++
+        //Mostrar resultado
+        const output = document.querySelector("#textarea-conversao")
+        output.value = ""
+        output.value += resultado
+    } else {
+        const output = document.querySelector("#textarea-conversao")
+        output.value = ""
     }
-    //Transfomar parte inteira para binário
-    aux = parteInteira
-    posicao = 0
-    while (aux != 0 && valor != ""){
-        vetorInteiro[posicao] = aux%8
-        if (aux%8 != 0){
-            aux = parseInt(aux/8) 
-        } else { 
-            aux = aux/8
-        }
-        posicao++
-    }   
-    for(var i = 0; i < vetorInteiro.length; i++){
-        resultado += vetorInteiro[i] * 10**i
-    }
-    //Transformar parte fracionada para binário
-    aux = parteFracionada
-    for(var i = 0; aux != 0; i++){
-        aux *= 8
-        if (aux >= 7){
-            resultado += 0.1**(i+1)
-            aux -= 7
-        }
-    }
-    //Mostrar resultado
-    const output = document.querySelector("#textarea-conversao")
-    output.value = resultado
 }
-//Decimal para hex
+//Decimal para Hex
 function decimalParaHex() {
     //Variáveis 
     let resultado = "" 
@@ -223,53 +297,7 @@ function decimalParaHex() {
     const output = document.querySelector("#textarea-conversao")
     output.value = resultado
 }
-//Binario para decimal
-function binarioParaDecimal() {
-    //Variáveis 
-    let posicao = 0
-    let vetorInteiro = []
-    let vetorFracionado = []
-    let resultado = 0
-    //Ler valor
-    let valor = document.querySelector("#textarea-conversao").value
-    //Separar parte inteira
-    let parteInteira = parseInt(valor)
-    //Separar parte decimal
-    let parteDecimal = parseFloat(valor) % 1
-    window.alert(parteDecimal)
-    //Separar parte fracionada em array
-    let aux = parteInteira
-    for (var i = 1; valor > aux; i++){
-        if (!(aux + 0.1**i > valor)){
-            vetorFracionado[posicao] = 1
-            aux += 0.1**i
-        } else {
-            vetorFracionado[posicao] = 0
-        }
-        posicao++
-    }
-    //Separar parte inteira em array
-    aux = parteInteira.toString()
-    for(var i = 0; i < aux.length; i++){
-        vetorInteiro[i] = aux.charAt(i)
-    }
-    //Transformar parte inteira em decimal
-    for(var i = 1; i <= vetorInteiro.length; i++){
-        if (vetorInteiro[vetorInteiro.length - i] == "1"){
-            resultado += 2**(i-1)
-        }
-    }
-    //Transformar parte fracionada em decimal
-    for(var i = 0; i < vetorFracionado.length; i++){
-        if (vetorFracionado[i] == "1"){
-            resultado += 0.5**(i+1)
-        }
-    }
-    //Mostrar resultado
-    const output = document.querySelector("#textarea-decimal")
-    output.value = resultado
-}
-//octal para decimal
+//Octal para Decimal
 function octalParaDecimal() {
     //Variáveis 
     let parteInteira = 0
@@ -315,8 +343,7 @@ function octalParaDecimal() {
     const output = document.querySelector("#textarea-decimal")
     output.value = resultado
 }
-
-//hex para decimal
+//Hex para Decimal
 function hexParaDecimal() {
     //Variáveis 
     let parteInteira = 0
